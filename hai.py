@@ -59,7 +59,7 @@ class Ai(Module):
 
         @self.strict_owner_command
         async def translate(event):
-            """rig_lang + finally_lang + text -> will translate your text"""
+            """lang + finally_lang + text -> will translate your text"""
             args = event.message.text.split(' ')
             from_lang = args[1]
             to_lang = args[2]
