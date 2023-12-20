@@ -8,7 +8,7 @@ from googletrans import Translator
 class Ai(Module):
     def __init__(self) -> None:        
         self.init()
-        self.set_module_description(f"XannaxyAI for {self.utils.Config.device_model}-{self.utils.Config.system_version}")
+        self.set_module_description(f"XannaxyAI for {self.Utils.Config.device_model}-{self.Utils.Config.system_version}")
         self.logger = self.get_logger()
         self.handle()
 
