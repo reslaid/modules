@@ -81,11 +81,12 @@ class hLoader(Module):
         @self.strict_owner_command
         async def rawlm(event) -> None:
             """filename + url -> download the module from any source"""
-            message_text = event.message.text.split(' ')
-            file_name = message_text[1]
+            args: list = await self.get_args(event)
+            file_name = args[0]
+            url = ' '.join(args[1:])
+
             file_path = os.path.join(self.loader.module_folder, file_name)
             file_module_name = self.loader.get_module_name(file_name)
-            url = ' '.join(message_text[2:])
             content = await self.loader.get_content(url=url)
             await self.files.save_content_to_file(content=content, file_path=file_path)
             self.log.debug(f"Module '{file_module_name}' installed")
@@ -106,9 +107,9 @@ class hLoader(Module):
         @self.strict_owner_command
         async def pblm(event) -> None:
             """filename + key -> download module from pastebin"""
-            message_text = event.message.text.split(' ')
-            file_name = message_text[1]
-            past_key = ' '.join(message_text[2:])
+            args: list = await self.get_args(event)
+            file_name = args[0]
+            past_key = ' '.join(args[1:])
 
             raw_pastebin_url = await self.loader.generate_raw_pastebin_url(past_key)
             content = await self.loader.get_content(raw_pastebin_url)
@@ -135,8 +136,8 @@ class hLoader(Module):
         @self.strict_owner_command
         async def gitlm(event) -> None:
             """module -> download module from github"""
-            message_text = event.message.text.split(' ')
-            module_name: str = message_text[1]
+            args: list = await self.get_args(event)
+            module_name: str = args[0]
             modules_repo: str = self.Utils.Config.modules_repo
 
             if modules_repo.endswith('/'):
@@ -169,8 +170,8 @@ class hLoader(Module):
         @self.strict_owner_command
         async def gitum(event) -> None:
             """module -> update module, source: github"""
-            message_text: list = event.message.text.split(' ')
-            module_name: str = message_text[1]
+            args: list = await self.get_args(event)
+            module_name: str = args[0]
             modules_repo: str = self.Utils.Config.modules_repo
 
             if modules_repo.endswith('/'):
@@ -512,7 +513,7 @@ class hayes(Module):
         @self.strict_owner_command
         async def mods(event) -> None:
             """shows a list of installed mods"""
-            args = await self.get_args(event=event)
+            args: list = await self.get_args(event)
             if len(args) > 0:
                 args = ' '.join(args[0:])
                 if self.module_commands != "None":
@@ -545,32 +546,6 @@ class hayes(Module):
         async def id(event) -> None:
             """shows unique chat ID"""
             await event.edit(f"<b>ID</b>: <code>{event.chat_id}</code>", parse_mode="html")
-
-        @self.strict_owner_command
-        async def chrid(event):
-            """char -> get ord() of a character"""
-            args = ' '.join(event.message.text.split('.chrid ')[1:])
-            reply = await event.get_reply_message() if await event.get_reply_message() else None
-
-            if args:
-                await event.edit(f'<b>Ord</b>: <code>{ord(args)}</code>', parse_mode='html')
-
-            elif reply:
-                await event.edit(f'<b>Ord</b>: <code>{ord(reply.text)}</code>', parse_mode='html')
-
-            else:
-                await event.edit("<b>Failed.</b>", parse_mode="html")
-
-        @self.strict_owner_command
-        async def unparse(event):
-            """(reply): remove HTML parsing from messages"""
-            reply = await event.get_reply_message()
-            if reply:
-                reply_text = reply.text
-                reply_raw_text = reply.raw_text
-                await event.edit(f"**Tag**:\n `{self.html.escape(reply_text)}`\n\n**Raw**:\n `{reply_raw_text}`", parse_mode="markdown")
-            else:
-                await event.edit("<b>Failed</b>.", parse_mode="html")
 
         @self.strict_owner_command
         async def execute(event):
