@@ -219,10 +219,10 @@ class hLoader(Module):
             try:
                 module_file = ' '.join(event.text.split(" ", maxsplit=1)[1:])
                 module_name = self.loader.get_module_name(module_file)
-                hayes_module_file = self.Utils.Dictionary.get_key_by_subkey(self.loader.hooked_modules, self.name)
+                hayes_module_file = self.Utils.Dictionary.get_key_by_subkey(self.loader.hooked_modules, self._name)
                 hayes_module_name = self.loader.get_module_name(hayes_module_file)
 
-                if module_file != self.Utils.Dictionary.get_key_by_subkey(self.loader.hooked_modules, self.name):
+                if module_file != self.Utils.Dictionary.get_key_by_subkey(self.loader.hooked_modules, self._name):
                     await self.loader.unhook_module(module_file)
                     os.remove(os.path.join(self.loader.module_folder, module_file))
                     await event.edit(f"<b>Module '{module_name}' Unloaded</b>", parse_mode="html")
