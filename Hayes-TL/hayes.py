@@ -599,6 +599,6 @@ class hayes(Module):
                 await event.reply(f"**Error**:\n```{err if err else 'None'}```", parse_mode='markdown')
 
 
+hayes()
 hLoader()
 hMem()
-hayes()
