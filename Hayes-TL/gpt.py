@@ -5,6 +5,8 @@ from loader import (
 
 class XannaxyGPT(Module):
     def __init__(self) -> None:
+        self.string: dict = {}
+        
         self.init()
         self.set_module_description(f"XannaxyGPT for {self.utils.Config.device_model}-{self.utils.Config.system_version}")
         self.logger = self.get_logger()
