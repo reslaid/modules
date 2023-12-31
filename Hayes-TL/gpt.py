@@ -1,7 +1,9 @@
 from loader import (
     Module
 )
-
+import json
+import aiohttp
+import googletrans
 
 class XannaxyGPT(Module):
     def __init__(self) -> None:
@@ -10,8 +12,6 @@ class XannaxyGPT(Module):
         self.init()
         self.set_module_description(f"XannaxyGPT for {self.utils.Config.device_model}-{self.utils.Config.system_version}")
         self.logger = self.get_logger()
-        self.googletrans = self.req("googletrans", _importlib=True)
-        self.aiohttp = self.req("aiohttp", _importlib=True)
         self.handle()
 
     async def answer(self, prompt: str) -> str:
@@ -19,18 +19,23 @@ class XannaxyGPT(Module):
         full_url = url + f"prompt={prompt}"
 
         try:
-            async with self.aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession() as session:
                 async with session.get(full_url) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        answer = data.get("answer", "No answer available.")
-                        return answer
+                        data = await response.text()
+                        try:
+                            json_data = json.loads(data)
+                            answer = json_data.get("answer", "No answer available.")
+                            return answer
+                        except json.JSONDecodeError as json_error:
+                            self.logger.error(f'Error decoding JSON: {json_error}')
+                            return "Error: Invalid JSON response"
                     else:
                         self.logger.error(f'{response.status=}, {url=}')
                         return f"Error: {response.status}"
 
         except Exception as e:
-            self.logger.error(e)
+            self.logger.error(f'An error occurred: {e}')
             return f"An error occurred: {e}"
 
     async def xanswer(self, prompt: str) -> str:
@@ -39,7 +44,7 @@ class XannaxyGPT(Module):
         return await self.answer(full_prompt)
 
     async def translate(self, text: str, dest: str, src: str = 'auto'):
-        return self.googletrans.Translator().translate(text=text, dest=dest, src=src)
+        return googletrans.Translator().translate(text=text, dest=dest, src=src)
 
     def handle(self):
         @self.strict_owner_command
@@ -59,7 +64,7 @@ class XannaxyGPT(Module):
             await event.delete()
 
             await event.respond(
-                f"**{sender.first_name}({sender.id}, {'@'+sender.username or 'None'}): ```{request}```**\n\n**XannaxyGPT:\n{text}**",
+                f"**{sender.first_name}({sender.id}): ```{request}```**\n\n**XannaxyGPT:\n{text}**",
                 parse_mode='markdown'
             )
 
@@ -80,7 +85,7 @@ class XannaxyGPT(Module):
             await event.delete()
 
             await event.respond(
-                f"**{sender.first_name}({sender.id}, {'@'+sender.username or 'None'}): ```{request}```**\n\n**XannaxyGPT:\n{text}**",
+                f"**{sender.first_name}({sender.id}): ```{request}```**\n\n**XannaxyGPT:\n{text}**",
                 parse_mode='markdown'
             )
 
