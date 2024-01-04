@@ -291,7 +291,7 @@ class Bloody(Module):
                 text = "<b>The template directory is empty.</b>"
             else:
                 result = '\n'.join([f"<code>{template}</code>" for template in templates])
-                current_shablon = self.templon_name or "not selected"
+                current_shablon = self.template_name or "not selected"
                 text = f"<b>Available template files:</b>\n\n{result}\n\n<b>Current template: </b><code>{current_shablon}</code>"
 
             await message.edit(text, parse_mode='html')
