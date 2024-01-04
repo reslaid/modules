@@ -1,12 +1,10 @@
 #meta developer: reslaid
-from loader import (
-    Module
-)
+import loader
 import json
 import aiohttp
 
 
-class XannaxyGPT(Module):
+class XannaxyGPT(loader.Module):
     def __init__(self) -> None:
         self.string: dict = {}
         self.init()
