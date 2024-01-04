@@ -4,6 +4,7 @@ from loader import (
 import json
 import aiohttp
 
+
 class XannaxyGPT(Module):
     def __init__(self) -> None:
         self.string: dict = {}
