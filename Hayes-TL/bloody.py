@@ -111,7 +111,7 @@ class Bloody(Module):
                     await event.respond(self.autorepond_header + " " + self.random.choice(self.template), file=self.the_file)
                     self.log.debug(f"Reply to a user's message: {event.sender_id} [Mode: {self.mode}] [File: {self.the_file}]")
 
-        @self.owner_command
+        @self.strict_owner_command
         async def bladd(event):
             """reply -> start auto-reply"""
             try:
@@ -126,7 +126,7 @@ class Bloody(Module):
             except Exception as e:
                 print(f"An error occurred: {e}")
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blclear(event):
             """clears all autoresponder targets"""
 
@@ -134,7 +134,7 @@ class Bloody(Module):
             self.users = []
             await event.edit("<b>Users cleared</b>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blremove(event):
             """reply or user id -> remove a person from the autoresponder list"""
 
@@ -164,7 +164,7 @@ class Bloody(Module):
                 else:
                     await event.edit("<b>The user was not on the list</b>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blstop(event):
             """erase the current conference from the list of goals"""
 
@@ -192,7 +192,7 @@ class Bloody(Module):
             elif args in self.chats_typer:
                 self.chats_typer.remove(args)
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blrheader(event):
             """header -> Change header / del -> Removing the header"""
 
@@ -210,7 +210,7 @@ class Bloody(Module):
 
             await event.edit(f"<b>The header has been changed to: <code>{self.autorepond_header}</code>\nOld hat: <code>{self.old_header}</code></b>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blrdelay(event):
             """delay -> setting the sending delay"""
 
@@ -221,7 +221,7 @@ class Bloody(Module):
             self.log.debug(f"Auto-responder delay: {self.delay}")
             await event.edit(f"Delay: {self.delay}")
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blmmode(event):
             """vid / ph / txt -> select media"""
             args = await self.get_args(event, maxsplit=1)
@@ -241,7 +241,7 @@ class Bloody(Module):
             self.log.debug(f"Auto-responder media: {prew}")
             await event.edit(f"Mode: {prew}")
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blmode(event):
             """reply / send -> changing the sending mode"""
             args = await self.get_args(event, maxsplit=1)
@@ -253,12 +253,12 @@ class Bloody(Module):
             else:
                 await event.edit("You specified an invalid mode.Available modes: 'reply', 'send'")
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blsetfile(message):
             """file.txt: change template"""
 
             args = await self.get_args(message, maxsplit=1)
-            template_dir = self.directories["messages"]
+            template_dir = self.directories["message"]
             template_file = os.path.join(template_dir, "template.txt")
             template_files = os.listdir(template_dir)
 
@@ -281,12 +281,11 @@ class Bloody(Module):
                 self.log.debug(f"Pattern not found: {args}")
                 await message.edit(f"<b>File [<code>{args}</code>] not found</b>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blfiles(message):
             """list of installed templates"""
 
-            template_dir = os.path.join(os.getcwd(), "messages")
-            templates = os.listdir(template_dir)
+            templates = os.listdir(self.directories["message"])
 
             if not templates:
                 text = "<b>The template directory is empty.</b>"
@@ -297,7 +296,7 @@ class Bloody(Module):
 
             await message.edit(text, parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blupload(event):
             """reply: get link to file"""
 
@@ -328,7 +327,7 @@ class Bloody(Module):
                             link = 'https://telegra.ph' + result_json[0]['src']
                             await event.respond(f'<b>Link</b>: <code>{link}</code>', parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blqload(event):
             """reply: get link to file + auto-apply"""
 
@@ -375,7 +374,7 @@ class Bloody(Module):
                                 parse_mode='html'
                             )
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blch(event):
             """clear cache"""
 
@@ -397,7 +396,7 @@ class Bloody(Module):
 
                 await event.edit(f"<b>Ready, cache data has been cleared, freed</b>: <code>{megabytes} MB</code> / <code>{round(total_size)} Bytes</code>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blsetvd(event):
             """url: uploads your video to the config"""
 
@@ -425,7 +424,7 @@ class Bloody(Module):
             except Exception as e:
                 await event.edit(f"<b>Error:</b> <code>{e}</code>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blsetph(event):
             """url: uploads your photo to the config"""
 
@@ -453,7 +452,7 @@ class Bloody(Module):
             except Exception as e:
                 await event.edit(f"<b>Error:</b> <code>{e}</code>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blinc(event):
             """delay -> start flooder"""
             args: list = await self.get_args(event)
@@ -470,7 +469,7 @@ class Bloody(Module):
                 await self.client.send_message(chat_id, header + " " + self.random.choice(self.template))
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blinj(message):
             """delay -> start flooder (optimization)"""
             args = await self.get_args(message)
@@ -490,7 +489,7 @@ class Bloody(Module):
                 await self.client.send_message(chat_id, header + " " + self.random.choice(self.template), file=file)
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blinm(message):
             """delay -> start flooder (music)"""
             args = await self.get_args(message)
@@ -511,7 +510,7 @@ class Bloody(Module):
                 await self.client.send_message(chat_id, header, file=ttd)
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blinv(message):
             """delay -> start flooder (voice)"""
             args = await self.get_args(message)
@@ -532,7 +531,7 @@ class Bloody(Module):
                 await self.client.send_file(chat_id, ttd, caption=header, voice_note=True)
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blint(message):
             """delay -> start flooder (typing)"""
             args = await self.get_args(message)
@@ -556,7 +555,7 @@ class Bloody(Module):
 
                 await self.asyncio.sleep(delay)
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blins(message):
             """delay -> start media flooder (reliability)"""
             args = await self.get_args(message)
@@ -579,7 +578,7 @@ class Bloody(Module):
                 await self.client.send_message(chat_id, header + " " + self.random.choice(self.template), file=file)
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blschedule(message):
             """delay in minutes + conference ID -> fill your calendar with pending messages"""
             reply = await message.get_reply_message()
@@ -620,7 +619,7 @@ class Bloody(Module):
                     self.log.error(error)
                     break
 
-        @self.owner_command
+        @self.strict_owner_command
         async def bltag(message):
             """delay + user ID -> tagger start"""
 
@@ -651,7 +650,7 @@ class Bloody(Module):
                 )
                 await self.asyncio.sleep(delay)
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blload(event):
             """reply: downloads template to directory templates"""
 
@@ -671,7 +670,7 @@ class Bloody(Module):
             except Exception as ex:
                 await event.edit(f"**Error**:\n```{ex}```", parse_mode="markdown")
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blrsv(message):
             """delay -> start flooder + video"""
             args = await self.get_args(message)
@@ -693,7 +692,7 @@ class Bloody(Module):
                 )
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blrsp(message):
             """delay -> start flooder + photo"""
             args = await self.get_args(message)
@@ -711,12 +710,12 @@ class Bloody(Module):
                 await self.client.send_file(chat_id, self.photo_url, caption=header + " " + self.random.choice(self.template))
                 await self.asyncio.sleep(float(delay))
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blstate(message):
             """bot statuses"""
             await message.edit(f"<b>Flooders:\n<b>Chats [Text]</b>: <u>{self.chats}</u>\n<b>Chats [Photo]</b >: <u>{self.chats_photo}</u>\n<b>Chats [Video]</b>: <u>{self.chats_video}</u>\n<b>Chats [Tagger]</b>: <u>{self.chats_tagger}</u>\n<b>Erase the current conference from the list of goals</b>: <code>.blstop</code>\n<b>Erase the conference from the list targets by ID</b>: <code>.blstop</code> + chat_id\n<b>Erase all targets</b>: <code>.blstopall</code>\n\n<b>Auto responders</b>:\n<b>Users</b>: <u>{self.users}</u>\n<b>To remove a user from the target list</b>: <code>.blremove</code> + <i>reply to user</i>\n<b>For inline removal</b>: <code>.blremove</code> + <b>user_id</b>\n<b>To clear the entire list</b>: <code>.blclear</code>", parse_mode='html')
 
-        @self.owner_command
+        @self.strict_owner_command
         async def blstopall(message):
             """erase all targets"""
             self.chats = []
