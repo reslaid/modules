@@ -43,9 +43,8 @@ class hLoader(loader.Module):
                         content = file.read()
 
                     await event.edit(
-                        f"<b>Module '{self.loader.get_module_name(file_name)}' Loaded</b>\n"
-                        f"<b>Description</b>: <i>{self.get_mdl_description(self.loader.hooked_modules[file_name][0])}</i>\n\n"
-                        f"{self.module_commands(next(iter(self.loader.hooked_modules[file_name])))}",
+                        f"<b>Module with file name '{file_name}' is updated</b>\n"
+                        f"<b>The module can be viewed in <code>.mods</code></b>\n",
                         parse_mode="html"
                     )
                 else:
@@ -66,9 +65,8 @@ class hLoader(loader.Module):
                     await event.edit('<b>Loading...</b>', parse_mode='html')
 
                     await event.edit(
-                        f"<b>Module '{self.loader.get_module_name(file_name)}' Loaded</b>\n"
-                        f"<b>Description</b>: <i>{self.get_mdl_description(self.loader.hooked_modules[file_name][0])}</i>\n\n"
-                        f"{self.module_commands(next(iter(self.loader.hooked_modules[file_name])))}",
+                        f"<b>Module with file name '{file_name}' is updated</b>\n"
+                        f"<b>The module can be viewed in <code>.mods</code></b>\n",
                         parse_mode="html"
                     )
                 else:
@@ -99,7 +97,7 @@ class hLoader(loader.Module):
             await event.edit('<b>Loading...</b>', parse_mode='html')
 
             await event.edit(
-                f"<b>Module '{file_module_name}' Loaded</b>\n"
+                f"<b>Module with file name '{file_name}' is updated</b>\n"
                 f"<b>The module can be viewed in <code>.mods</code></b>\n",
                 parse_mode="html"
             )
@@ -127,7 +125,7 @@ class hLoader(loader.Module):
             await event.edit('<b>Loading...</b>', parse_mode='html')
 
             await event.edit(
-                f"<b>Module '{file_module_name}' Loaded</b>\n"
+                f"<b>Module with file name '{file_name}' is updated</b>\n"
                 f"<b>The module can be viewed in <code>.mods</code></b>\n",
                 parse_mode="html"
             )
@@ -162,7 +160,7 @@ class hLoader(loader.Module):
             await event.edit('<b>Loading...</b>', parse_mode='html')
 
             await event.edit(
-                f"<b>Module '{file_module_name}' Loaded</b>\n"
+                f"<b>Module with file name '{module_name}' is updated</b>\n"
                 f"<b>The module can be viewed in <code>.mods</code></b>\n",
                 parse_mode="html"
             )
@@ -201,10 +199,10 @@ class hLoader(loader.Module):
                 await event.edit('<b>Loading...</b>', parse_mode='html')
 
                 await event.edit(
-                f"<b>Module '{file_module_name}' Loaded</b>\n"
-                f"<b>The module can be viewed in <code>.mods</code></b>\n",
-                parse_mode="html"
-            )
+                    f"<b>Module with file name '{module_name}' is updated</b>\n"
+                    f"<b>The module can be viewed in <code>.mods</code></b>\n",
+                    parse_mode="html"
+                )
 
             else:
                 await event.edit(
