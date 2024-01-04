@@ -153,7 +153,7 @@ class hLoader(Module):
 
             await self.files.save_content_to_file(content=content, file_path=file_path)
             self.log.debug(f"Module '{file_module_name}' installed")
-            await self.loader.hook_module_adv(module_name, _compile=0)
+            await self.loader.hook_module_adv(module_name)
 
             await event.edit('<b>Loading.</b>', parse_mode='html')
             await event.edit('<b>Loading..</b>', parse_mode='html')
@@ -599,6 +599,6 @@ class hayes(Module):
                 await event.reply(f"**Error**:\n```{err if err else 'None'}```", parse_mode='markdown')
 
 
-hayes()
 hLoader()
 hMem()
+hayes()
