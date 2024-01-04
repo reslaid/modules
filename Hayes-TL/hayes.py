@@ -1,10 +1,8 @@
-from loader import (
-    Module, Loader
-)
+import loader
 import os
 
 
-class hLoader(Module):
+class hLoader(loader.Module):
     """built-in hayesLoader module"""
 
     def __init__(self) -> None:
@@ -17,7 +15,7 @@ class hLoader(Module):
 
         self.init()
         self.log = self.get_logger()
-        self.loader = Loader()
+        self.loader = loader.Loader()
         self.files = self.Utils.Files
         self.hashlib = self.req('hashlib', _importlib=True)
         self.asyncio = self.req('asyncio', _importlib=True)
@@ -31,15 +29,18 @@ class hLoader(Module):
             if reply and reply.file:
                 file_name = reply.file.name
                 if any(file_name.lower().endswith(ext) for ext in self.loader.valid_extensions):
-
-                    await self.client.download_media(reply, os.path.join("modules", file_name))
+                    file_path = os.path.join("modules", file_name)
+                    await self.client.download_media(reply, file_path)
                     self.log.debug(f"Module '{self.loader.get_module_name(file_name)}' installed")
-                    await self.loader.hook_module_adv(file_name, _compile=0)
+                    await self.loader.hook_module_adv(file_name)
 
                     await event.edit('<b>Loading.</b>', parse_mode='html')
                     await event.edit('<b>Loading..</b>', parse_mode='html')
                     await self.asyncio.sleep(0.4)
                     await event.edit('<b>Loading...</b>', parse_mode='html')
+
+                    with open(file_path, "rb") as file:
+                        content = file.read()
 
                     await event.edit(
                         f"<b>Module '{self.loader.get_module_name(file_name)}' Loaded</b>\n"
@@ -57,7 +58,7 @@ class hLoader(Module):
                 if any(file_name.lower().endswith(ext) for ext in self.loader.valid_extensions):
                     await event.download_media(os.path.join("modules", file_name))
                     self.log.debug(f"Module '{self.loader.get_module_name(file_name)}' installed")
-                    await self.loader.hook_module_adv(file_name, _compile=0)
+                    await self.loader.hook_module_adv(file_name)
 
                     await event.edit('<b>Loading.</b>', parse_mode='html')
                     await event.edit('<b>Loading..</b>', parse_mode='html')
@@ -90,7 +91,7 @@ class hLoader(Module):
             content = await self.loader.get_content(url=url)
             await self.files.save_content_to_file(content=content, file_path=file_path)
             self.log.debug(f"Module '{file_module_name}' installed")
-            await self.loader.hook_module_adv(file_name, _compile=0)
+            await self.loader.hook_module_adv(file_name)
 
             await event.edit('<b>Loading.</b>', parse_mode='html')
             await event.edit('<b>Loading..</b>', parse_mode='html')
@@ -98,9 +99,8 @@ class hLoader(Module):
             await event.edit('<b>Loading...</b>', parse_mode='html')
 
             await event.edit(
-                f"<b>Module '{self.loader.get_module_name(file_name)}' Loaded</b>\n"
-                f"<b>Description</b>: <i>{self.get_mdl_description(self.loader.hooked_modules[file_name][0])}</i>\n\n"
-                f"{self.module_commands(next(iter(self.loader.hooked_modules[file_name])))}",
+                f"<b>Module '{file_module_name}' Loaded</b>\n"
+                f"<b>The module can be viewed in <code>.mods</code></b>\n",
                 parse_mode="html"
             )
 
@@ -119,7 +119,7 @@ class hLoader(Module):
 
             await self.files.save_content_to_file(content=content, file_path=file_path)
             self.log.debug(f"Module '{file_module_name}' installed")
-            await self.loader.hook_module_adv(file_name, _compile=0)
+            await self.loader.hook_module_adv(file_name)
 
             await event.edit('<b>Loading.</b>', parse_mode='html')
             await event.edit('<b>Loading..</b>', parse_mode='html')
@@ -128,8 +128,7 @@ class hLoader(Module):
 
             await event.edit(
                 f"<b>Module '{file_module_name}' Loaded</b>\n"
-                f"<b>Description</b>: <i>{self.get_mdl_description(self.loader.hooked_modules[file_name][0])}</i>\n\n"
-                f"{self.module_commands(next(iter(self.loader.hooked_modules[file_name])))}",
+                f"<b>The module can be viewed in <code>.mods</code></b>\n",
                 parse_mode="html"
             )
 
@@ -153,6 +152,8 @@ class hLoader(Module):
 
             await self.files.save_content_to_file(content=content, file_path=file_path)
             self.log.debug(f"Module '{file_module_name}' installed")
+
+            print(self.loader.hooked_modules)
             await self.loader.hook_module_adv(module_name)
 
             await event.edit('<b>Loading.</b>', parse_mode='html')
@@ -161,9 +162,8 @@ class hLoader(Module):
             await event.edit('<b>Loading...</b>', parse_mode='html')
 
             await event.edit(
-                f"<b>Module '{self.loader.get_module_name(module_name)}' Loaded</b>\n"
-                f"<b>Description</b>: <i>{self.get_mdl_description(self.loader.hooked_modules[module_name][0])}</i>\n\n"
-                f"{self.module_commands(next(iter(self.loader.hooked_modules[module_name])))}",
+                f"<b>Module '{file_module_name}' Loaded</b>\n"
+                f"<b>The module can be viewed in <code>.mods</code></b>\n",
                 parse_mode="html"
             )
 
@@ -193,7 +193,7 @@ class hLoader(Module):
 
                 await self.files.save_content_to_file(content=github_content, file_path=file_path)
                 self.log.debug(f"Module '{file_module_name}' reinstalled")
-                await self.loader.hook_module_adv(module_name, _compile=0)
+                await self.loader.hook_module_adv(module_name)
 
                 await event.edit('<b>Loading.</b>', parse_mode='html')
                 await event.edit('<b>Loading..</b>', parse_mode='html')
@@ -201,11 +201,10 @@ class hLoader(Module):
                 await event.edit('<b>Loading...</b>', parse_mode='html')
 
                 await event.edit(
-                    f"<b>Module '{self.loader.get_module_name(module_name)}' Loaded</b>\n"
-                    f"<b>Description</b>: <i>{self.get_mdl_description(self.loader.hooked_modules[module_name][0])}</i>\n\n"
-                    f"{self.module_commands(next(iter(self.loader.hooked_modules[module_name])))}",
-                    parse_mode="html"
-                )
+                f"<b>Module '{file_module_name}' Loaded</b>\n"
+                f"<b>The module can be viewed in <code>.mods</code></b>\n",
+                parse_mode="html"
+            )
 
             else:
                 await event.edit(
@@ -357,7 +356,7 @@ class hLoader(Module):
                 await event.edit(f"**An unhandled error occurred**:\n```{err}```", parse_mode="markdown")
 
 
-class hMem(Module):
+class hMem(loader.Module):
     """built-in hayesMemory module"""
 
     def __init__(self) -> None:
@@ -377,7 +376,7 @@ class hMem(Module):
 
         self.init()
         self.log = self.get_logger()
-        self.loader = Loader()
+        self.loader = loader.Loader()
         self.handle()
 
     def handle(self):
@@ -462,7 +461,7 @@ class hMem(Module):
             )
 
 
-class hayes(Module):
+class hayes(loader.Module):
     """built-in hayes module"""
 
     def __init__(self) -> None:
