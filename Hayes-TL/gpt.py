@@ -1,3 +1,4 @@
+#meta developer: reslaid
 from loader import (
     Module
 )
